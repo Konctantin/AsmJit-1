@@ -960,52 +960,84 @@ namespace AsmJit.AssemblerContext
 			Assembler.Emit(CondToJcc(cc), o0);
 		}
 
-		public void Ja(Label o0)
+        public void J(Condition cc, Immediate o0) {
+            Assembler.Emit(CondToJcc(cc), o0);
+        }
+
+        public void Ja(Label o0)
 		{
 			Assembler.Emit(InstructionId.Ja, o0);
 		}
+        public void Ja(Immediate o0) {
+            Assembler.Emit(InstructionId.Ja, o0);
+        }
 
-		public void Jae(Label o0)
+        public void Jae(Label o0)
 		{
 			Assembler.Emit(InstructionId.Jae, o0);
 		}
 
-		public void Jb(Label o0)
+        public void Jae(Immediate o0) {
+            Assembler.Emit(InstructionId.Jae, o0);
+        }
+
+        public void Jb(Label o0)
 		{
 			Assembler.Emit(InstructionId.Jb, o0);
 		}
+        public void Jb(Immediate o0) {
+            Assembler.Emit(InstructionId.Jb, o0);
+        }
 
-		public void Jbe(Label o0)
+        public void Jbe(Label o0)
 		{
 			Assembler.Emit(InstructionId.Jbe, o0);
 		}
+        public void Jbe(Immediate o0) {
+            Assembler.Emit(InstructionId.Jbe, o0);
+        }
 
-		public void Jc(Label o0)
+        public void Jc(Label o0)
 		{
 			Assembler.Emit(InstructionId.Jc, o0);
 		}
+        public void Jc(Immediate o0) {
+            Assembler.Emit(InstructionId.Jc, o0);
+        }
 
-		public void Je(Label o0)
+        public void Je(Label o0)
 		{
 			Assembler.Emit(InstructionId.Je, o0);
 		}
+        public void Je(Immediate o0) {
+            Assembler.Emit(InstructionId.Je, o0);
+        }
 
-		public void Jg(Label o0)
+        public void Jg(Label o0)
 		{
 			Assembler.Emit(InstructionId.Jg, o0);
 		}
+        public void Jg(Immediate o0) {
+            Assembler.Emit(InstructionId.Jg, o0);
+        }
 
-		public void Jge(Label o0)
+        public void Jge(Label o0)
 		{
 			Assembler.Emit(InstructionId.Jge, o0);
 		}
+        public void Jge(Immediate o0) {
+            Assembler.Emit(InstructionId.Jge, o0);
+        }
 
-		public void Jl(Label o0)
+        public void Jl(Label o0)
 		{
 			Assembler.Emit(InstructionId.Jl, o0);
 		}
+        public void Jl(Immediate o0) {
+            Assembler.Emit(InstructionId.Jl, o0);
+        }
 
-		public void Jle(Label o0)
+        public void Jle(Label o0)
 		{
 			Assembler.Emit(InstructionId.Jle, o0);
 		}
@@ -1014,108 +1046,171 @@ namespace AsmJit.AssemblerContext
 		{
 			Assembler.Emit(InstructionId.Jna, o0);
 		}
+        public void Jna(Immediate o0) {
+            Assembler.Emit(InstructionId.Jna, o0);
+        }
 
-		public void Jnae(Label o0)
+        public void Jnae(Label o0)
 		{
 			Assembler.Emit(InstructionId.Jnae, o0);
 		}
+        public void Jnae(Immediate o0) {
+            Assembler.Emit(InstructionId.Jnae, o0);
+        }
 
-		public void Jnb(Label o0)
+        public void Jnb(Label o0)
 		{
 			Assembler.Emit(InstructionId.Jnb, o0);
 		}
+        public void Jnb(Immediate o0) {
+            Assembler.Emit(InstructionId.Jnb, o0);
+        }
 
-		public void Jnbe(Label o0)
+        public void Jnbe(Label o0)
 		{
 			Assembler.Emit(InstructionId.Jnbe, o0);
 		}
+        public void Jnbe(Immediate o0) {
+            Assembler.Emit(InstructionId.Jnbe, o0);
+        }
 
-		public void Jnc(Label o0)
+        public void Jnc(Label o0)
 		{
 			Assembler.Emit(InstructionId.Jnc, o0);
 		}
+        public void Jnc(Immediate o0) {
+            Assembler.Emit(InstructionId.Jnc, o0);
+        }
 
-		public void Jne(Label o0)
+        public void Jne(Label o0)
 		{
 			Assembler.Emit(InstructionId.Jne, o0);
 		}
+        public void Jne(Immediate o0) {
+            Assembler.Emit(InstructionId.Jne, o0);
+        }
 
-		public void Jng(Label o0)
+        public void Jng(Label o0)
 		{
 			Assembler.Emit(InstructionId.Jng, o0);
 		}
+        public void Jng(Immediate o0) {
+            Assembler.Emit(InstructionId.Jng, o0);
+        }
 
-		public void Jnge(Label o0)
+        public void Jnge(Label o0)
 		{
 			Assembler.Emit(InstructionId.Jnge, o0);
 		}
+        public void Jnge(Immediate o0) {
+            Assembler.Emit(InstructionId.Jnge, o0);
+        }
 
-		public void Jnl(Label o0)
+        public void Jnl(Label o0)
 		{
 			Assembler.Emit(InstructionId.Jnl, o0);
 		}
+        public void Jnl(Immediate o0) {
+            Assembler.Emit(InstructionId.Jnl, o0);
+        }
 
-		public void Jnle(Label o0)
+        public void Jnle(Label o0)
 		{
 			Assembler.Emit(InstructionId.Jnle, o0);
 		}
+        public void Jnle(Immediate o0) {
+            Assembler.Emit(InstructionId.Jnle, o0);
+        }
 
-		public void Jno(Label o0)
+        public void Jno(Label o0)
 		{
 			Assembler.Emit(InstructionId.Jno, o0);
 		}
+        public void Jno(Immediate o0) {
+            Assembler.Emit(InstructionId.Jno, o0);
+        }
 
-		public void Jnp(Label o0)
+        public void Jnp(Label o0)
 		{
 			Assembler.Emit(InstructionId.Jnp, o0);
 		}
+        public void Jnp(Immediate o0) {
+            Assembler.Emit(InstructionId.Jnp, o0);
+        }
 
-		public void Jns(Label o0)
+        public void Jns(Label o0)
 		{
 			Assembler.Emit(InstructionId.Jns, o0);
 		}
+        public void Jns(Immediate o0) {
+            Assembler.Emit(InstructionId.Jns, o0);
+        }
 
-		public void Jnz(Label o0)
+        public void Jnz(Label o0)
 		{
 			Assembler.Emit(InstructionId.Jnz, o0);
 		}
+        public void Jnz(Immediate o0) {
+            Assembler.Emit(InstructionId.Jnz, o0);
+        }
 
-		public void Jo(Label o0)
+        public void Jo(Label o0)
 		{
 			Assembler.Emit(InstructionId.Jo, o0);
 		}
+        public void Jo(Immediate o0) {
+            Assembler.Emit(InstructionId.Jo, o0);
+        }
 
-		public void Jp(Label o0)
+        public void Jp(Label o0)
 		{
 			Assembler.Emit(InstructionId.Jp, o0);
 		}
+        public void Jp(Immediate o0) {
+            Assembler.Emit(InstructionId.Jp, o0);
+        }
 
-		public void Jpe(Label o0)
+        public void Jpe(Label o0)
 		{
 			Assembler.Emit(InstructionId.Jpe, o0);
 		}
+        public void Jpe(Immediate o0) {
+            Assembler.Emit(InstructionId.Jpe, o0);
+        }
 
-		public void Jpo(Label o0)
+        public void Jpo(Label o0)
 		{
 			Assembler.Emit(InstructionId.Jpo, o0);
 		}
+        public void Jpo(Immediate o0) {
+            Assembler.Emit(InstructionId.Jpo, o0);
+        }
 
-		public void Js(Label o0)
+        public void Js(Label o0)
 		{
 			Assembler.Emit(InstructionId.Js, o0);
 		}
+        public void Js(Immediate o0) {
+            Assembler.Emit(InstructionId.Js, o0);
+        }
 
-		public void Jz(Label o0)
+        public void Jz(Label o0)
 		{
 			Assembler.Emit(InstructionId.Jz, o0);
 		}
+        public void Jz(Immediate o0) {
+            Assembler.Emit(InstructionId.Jz, o0);
+        }
 
-		public void Jecxz(GpRegister o0, Label o1)
+        public void Jecxz(GpRegister o0, Label o1)
 		{
 			Assembler.Emit(InstructionId.Jecxz, o0, o1);
 		}
+        public void Jecxz(GpRegister o0, Immediate o1) {
+            Assembler.Emit(InstructionId.Jecxz, o0, o1);
+        }
 
-		public void Jmp(GpRegister o0)
+        public void Jmp(GpRegister o0)
 		{
 			Assembler.Emit(InstructionId.Jmp, o0);
 		}

@@ -46,7 +46,8 @@ namespace AsmJit.Common
 		{
 			if (!@protected)
 			{
-				return new Pointer((byte*)Marshal.AllocHGlobal(count), count);
+                // Console.WriteLine("allocated unprotected");
+				return new Pointer((byte*)Marshal.AllocHGlobal(count), null, count);
 			}
 			const ProtectedMemoryMode mode = ProtectedMemoryMode.Executable | ProtectedMemoryMode.Writable;
 			// VirtualAlloc rounds allocated size to a page size automatically.
@@ -63,14 +64,24 @@ namespace AsmJit.Common
 			{
 				protectFlags |= mode.IsSet(ProtectedMemoryMode.Writable) ? Win32.MemoryProtectionType.ReadWrite : Win32.MemoryProtectionType.ReadOnly;
 			}
-
+            
 			var @base = Win32.NativeMethods.VirtualAlloc(IntPtr.Zero, (UIntPtr)size, Win32.VirtualAllocType.Commit | Win32.VirtualAllocType.Reserve, protectFlags);
 			if (@base.IsInvalid)
 			{
 				return Pointer.Invalid;
 			}
-			var handle = @base.DangerousGetHandle();
-			return new Pointer(handle, count, PointerFlags.Aligned | PointerFlags.Protected);
+            var handle = @base.DangerousGetHandle();
+            /* 
+             * Console.WriteLine($"Testing write to memory at 0x{(ulong) handle:X} up to {size}");
+            Marshal.WriteInt32(handle + 0x26, 0);
+            for (var i = 0; i < size; i++) {
+                //Console.WriteLine($"Testing write to memory at 0x{(ulong)(handle + i):X}");
+                Marshal.WriteByte(handle + i, 0);
+            }
+            */
+		    Win32.MemoryProtectionType oldProtectFlags;
+            Action unprotectIt = () => Win32.NativeMethods.VirtualProtect(handle, (UIntPtr)size, protectFlags, out oldProtectFlags);
+            return new Pointer(handle, unprotectIt, count, PointerFlags.Aligned | PointerFlags.Protected);
 		}
 
 		internal static Pointer Allocate(int count, int alignment)
@@ -88,7 +99,7 @@ namespace AsmJit.Common
 				ptr += alignment;
 			}
 			*(ptr - 1) = (byte)(ptr - tmp);
-			return new Pointer(ptr, count, PointerFlags.Aligned);
+			return new Pointer(ptr, null, count, PointerFlags.Aligned);
 		}
 
 		internal static Pointer Reallocate(Pointer p, int size)

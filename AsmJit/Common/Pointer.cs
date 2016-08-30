@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Globalization;
+using System.Runtime.InteropServices;
 
 namespace AsmJit.Common
 {
@@ -11,29 +12,35 @@ namespace AsmJit.Common
 
 		internal static Pointer Invalid = new Pointer();
 
-		internal unsafe Pointer(void* ptr, int dataSize = 0, PointerFlags flags = PointerFlags.None)
+	    private Action _unprotectIt;
+
+		internal unsafe Pointer(void* ptr, Action unprotectIt = null, int dataSize = 0, PointerFlags flags = PointerFlags.None)
 			: this()
 		{
 			DataSize = dataSize;
 			_ptr = (byte*)ptr;
 			Flags = flags;
+		    _unprotectIt = unprotectIt;
 		}
 
-		internal unsafe Pointer(byte* ptr, int dataSize = 0, PointerFlags flags = PointerFlags.None)
+		internal unsafe Pointer(byte* ptr, Action unprotectIt = null, int dataSize = 0, PointerFlags flags = PointerFlags.None)
 			: this()
 		{
 			DataSize = dataSize;
 			_ptr = ptr;
 			Flags = flags;
-		}
+            _unprotectIt = unprotectIt;
+        }
 
-		internal unsafe Pointer(IntPtr ptr, int dataSize = 0, PointerFlags flags = PointerFlags.None)
+		internal unsafe Pointer(IntPtr ptr, Action unprotectIt = null, int dataSize = 0, PointerFlags flags = PointerFlags.None)
 			: this()
 		{
 			DataSize = dataSize;
+            // Console.WriteLine($"ptr: 0x{(ulong) ptr:X} 0x{((ulong) (byte*) ptr):X}");
 			_ptr = (byte*)ptr;
 			Flags = flags;
-		}
+            _unprotectIt = unprotectIt;
+        }
 
 		internal int DataSize { get; private set; }
 
@@ -43,7 +50,11 @@ namespace AsmJit.Common
 		{
 			unsafe
 			{
-				return new Pointer { _ptr = p1._ptr + offset, DataSize = offset == 0 ? p1.DataSize : 0 };
+				return new Pointer {
+				    _ptr = p1._ptr + offset,
+                    DataSize = offset == 0 ? p1.DataSize : 0,
+                    _unprotectIt = p1._unprotectIt
+				};
 			}
 		}
 
@@ -51,7 +62,11 @@ namespace AsmJit.Common
 		{
 			unsafe
 			{
-				return new Pointer { _ptr = p1._ptr + (uint)p2._ptr, DataSize = 0 };
+				return new Pointer {
+				    _ptr = p1._ptr + (uint)p2._ptr,
+                    DataSize = 0,
+                    _unprotectIt = p1._unprotectIt
+                };
 			}
 		}
 
@@ -190,9 +205,11 @@ namespace AsmJit.Common
 
 		internal void SetI32(int value, int index = 0)
 		{
-			unsafe
-			{
-				*((int*)_ptr + index) = value;
+			unsafe {
+                _unprotectIt?.Invoke();
+                // Console.WriteLine($"i32 ptr: {(ulong) _ptr:X}");
+                //Marshal.WriteInt32(new IntPtr((long) _ptr), index, value);
+                *((int*)_ptr + index) = value;
 			}
 		}
 

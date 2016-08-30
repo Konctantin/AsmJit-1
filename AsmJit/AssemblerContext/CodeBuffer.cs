@@ -263,6 +263,7 @@ namespace AsmJit.AssemblerContext
 			{
 				// Make sure that the `RelocData` is correct.
 				var ptr = rd.Data;
+                // Console.WriteLine($"rd.Data: {rd.Data}");
 
 				var offset = rd.From;
 				if (!((int)(offset + rd.Size) <= maxCodeSize)) { throw new ArgumentException(); }
@@ -271,7 +272,8 @@ namespace AsmJit.AssemblerContext
 				// kRelocAbsToRel on 64-bit.
 				var useTrampoline = false;
 
-				switch (rd.Mode)
+                // Console.WriteLine($"Mode: {rd.Mode} {baseAddress:X} {rd.From:X}");
+                switch (rd.Mode)
 				{
 					case RelocationMode.AbsToAbs:
 						break;
@@ -282,7 +284,7 @@ namespace AsmJit.AssemblerContext
 
 					case RelocationMode.AbsToRel:
 						ptr -= baseAddress + rd.From + 4;
-						break;
+                        break;
 
 					case RelocationMode.Trampoline:
 						ptr -= baseAddress + rd.From + 4;
@@ -304,6 +306,7 @@ namespace AsmJit.AssemblerContext
 						break;
 
 					case 4:
+                        // Console.WriteLine($"dst: {dst}, offset: {offset}, ptr: {ptr}");
 						(dst + offset).SetI32((int)ptr);
 						break;
 
@@ -501,6 +504,7 @@ namespace AsmJit.AssemblerContext
 			}
 			codeSize = CodeSize;
 			var p = UnsafeMemory.Allocate(CodeSize, true);
+            // Console.WriteLine($"codeSize: 0x{codeSize:X}");
 
 			// Relocate the code and release the unused memory back to `VMemMgr`.
 			var relocSize = RelocateCode(ref p);
@@ -1153,7 +1157,34 @@ namespace AsmJit.AssemblerContext
 						}
 						break;
 					case InstructionEncoding.X86Jcc:
-						if (OperandsAre(OperandType.Label, OperandType.Invalid, OperandType.Invalid))
+                        if (OperandsAre(OperandType.Immediate, OperandType.Invalid, OperandType.Invalid)) {
+                            //_eh.ImmediateValue = op0.As<Immediate>().Int64;
+                            
+                            // Bound label.
+                            const int kRel8Size = 2;
+                            const int kRel32Size = 6;
+
+                            var offs = (int) _eh.ImmediateValue;
+                            // if (!(offs <= 0)) { throw new ArgumentException(); }
+
+                            if (!_eh.InstructionOptions.IsSet(InstructionOptions.LongForm) && (offs - kRel8Size).IsInt8()) {
+                                EmitOp(_eh.OpCode);
+                                EmitByte((byte)(offs - kRel8Size));
+
+                                _eh.InstructionOptions |= InstructionOptions.ShortForm;
+                                EmitDone();
+                                @continue = false;
+                            } else {
+                                EmitByte(0x0F);
+                                EmitOp(_eh.OpCode + 0x10);
+                                EmitDWord(offs - kRel32Size);
+
+                                _eh.InstructionOptions &= ~InstructionOptions.ShortForm;
+                                EmitDone();
+                                @continue = false;
+                            }
+                        }
+                        if (OperandsAre(OperandType.Label, OperandType.Invalid, OperandType.Invalid))
 						{
 							_eh.Label = _assembler.GetLabelData(op0.As<Label>().Id);
 
@@ -4515,7 +4546,7 @@ namespace AsmJit.AssemblerContext
 		{
 			var rd = new RelocationData
 			{
-				Mode = RelocationMode.AbsToRel,
+				Mode = RelocationMode.AbsToAbs,
 				Size = 4,
 				From = _cursor - _buffer + 1,
 				Data = (IntPtr)_eh.ImmediateValue
@@ -4523,6 +4554,7 @@ namespace AsmJit.AssemblerContext
 
 			var trampolineSize = 0;
 
+            /*
 			if (Constants.X64)
 			{
 				var baseAddress = _assembler.BaseAddress;
@@ -4542,6 +4574,7 @@ namespace AsmJit.AssemblerContext
 					trampolineSize = 8;
 				}
 			}
+            */
 
 			// Both `jmp` and `call` instructions have a single-byte opcode and are
 			// followed by a 32-bit displacement.
