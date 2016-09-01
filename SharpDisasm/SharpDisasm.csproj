@@ -62,8 +62,6 @@
     <Compile Include="Operand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Translators\ATTTranslator.cs" />
-    <Compile Include="Translators\NasmTranslator.cs" />
-    <Compile Include="Translators\MasmTranslator.cs" />
     <Compile Include="Translators\IntelTranslator.cs" />
     <Compile Include="Translators\SymbolResolverDelegate.cs" />
     <Compile Include="Translators\Translator.cs" />
